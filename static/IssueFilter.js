@@ -10,6 +10,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 var _reactRouterDom = require('react-router-dom');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -31,8 +35,31 @@ var IssueFilter = function (_React$Component) {
 
   _createClass(IssueFilter, [{
     key: 'render',
+
+    // constructor() {
+    //   super();
+    //   this.clearFilter = this.clearFilter.bind(this);
+    //   this.setFilterOpen = this.setFilterOpen.bind(this);
+    //   this.setFilterAssigned = this.setFilterAssigned.bind(this);
+    // }
+
+    // setFilterOpen(e) {
+    //   e.preventDefault();
+    //   this.props.setFilter({ status: 'Open' });
+    // }
+
+    // setFilterAssigned(e) {
+    //   e.preventDefault();
+    //   this.props.setFilter({ status: 'Assigned' });
+    // }
+
+    // clearFilter(e) {
+    //   e.preventDefault();
+    //   this.props.setFilter({});
+    // }
+
     value: function render() {
-      var Separation = function Separation() {
+      var Separator = function Separator() {
         return _react2.default.createElement(
           'span',
           null,
@@ -47,16 +74,16 @@ var IssueFilter = function (_React$Component) {
           { to: '/issues' },
           'All Issues'
         ),
-        _react2.default.createElement(Separation, null),
+        _react2.default.createElement(Separator, null),
         _react2.default.createElement(
           _reactRouterDom.Link,
-          { to: { pathname: "/issues", query: { status: 'Open' } } },
-          'Open Issues '
+          { to: { pathname: '/issues', query: { status: 'Open' } } },
+          'Open Issues'
         ),
-        _react2.default.createElement(Separation, null),
+        _react2.default.createElement(Separator, null),
         _react2.default.createElement(
           _reactRouterDom.Link,
-          { to: { pathname: "/issues", query: { status: 'Assigned' } } },
+          { to: { pathname: '/issues', query: { status: 'Assigned' } } },
           'Assigned Issues'
         )
       );
@@ -67,3 +94,8 @@ var IssueFilter = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = IssueFilter;
+
+
+IssueFilter.propTypes = {
+  setFilter: _propTypes2.default.func.isRequired
+};

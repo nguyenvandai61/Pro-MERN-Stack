@@ -3,11 +3,11 @@ const path = require('path');
 module.exports = {
     entry: {
         app: ['./src/app.jsx'],
-        vendor: ['react', 'react-dom', 'whatwg-fetch', 'babel-polyfill', 'react-router'],
+        vendor: ['react', 'react-dom', 'whatwg-fetch', 'babel-polyfill', 'react-router', 'react-router-dom'],
     },
     output: {
         path: path.resolve(__dirname, 'static'),
-        filename: '[name].bundle.js'
+        filename: '[name].bundle.js',
     },
 
     optimization: {
@@ -47,7 +47,7 @@ module.exports = {
             '/api/*': {
                 target: 'http://localhost:3000'
             }
-        }
+        },
     },
 
     devtool: 'source-map'

@@ -6,10 +6,11 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { MongoClient } from 'mongodb';
 import Issue from './issue.js';
-
+import path from 'path';
 const app = express();
 app.use(express.static('static'));
 app.use(bodyParser.json());
+
 
 let db;
 
@@ -28,6 +29,8 @@ app.get('/api/issues', (req, res) => {
     res.status(500).json({ message: `Internal Server Error: ${error}` });
   });
 });
+
+
 
 app.post('/api/issues', (req, res) => {
   const newIssue = req.body;

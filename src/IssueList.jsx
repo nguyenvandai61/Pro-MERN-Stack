@@ -33,7 +33,7 @@ function IssueTable(props) {
     <table className="bordered-table">
       <thead>
         <tr>
-          <th>Id</th>
+          <th>Idd</th>
           <th>Status</th>
           <th>Owner</th>
           <th>Created</th>
@@ -49,31 +49,30 @@ function IssueTable(props) {
 
 IssueTable.propTypes = {
   issues: PropTypes.array.isRequired,
-  location: PropTypes.object.isRequired,
 };
+
 
 export default class IssueList extends React.Component {
   constructor() {
     super();
     this.state = { issues: [] };
-
     this.createIssue = this.createIssue.bind(this);
+    this.setFilter = this.setFilter.bind(this);
   }
 
   componentDidMount() {
     this.loadData();
   }
   componentDidUpdate(prevProps) {
-    const oldQuery = prevProps.location.query;
-    const newQuery = this.props.location.query;
+    const oldQuery = prevProps.location.search;
+    const newQuery = this.props.location.search;
     console.log(oldQuery, newQuery);
     if (newQuery === oldQuery) return;
     this.loadData();
   }
 
   loadData() {
-    const qr = qs.stringify(this.props.location.query);
-    fetch(`/api/issues?${qr}`).then(response => {
+    fetch(`/api/issues${this.props.location.search}`).then(response => {
       if (response.ok) {
         response.json().then(data => {
           data.records.forEach(issue => {
@@ -119,11 +118,17 @@ export default class IssueList extends React.Component {
     });
   }
 
+  setFilter(query) {
+    this.props.history.push({
+      pathname: this.props.location.pathname, 
+      search: qs.stringify(query)
+    })
+  }
   render() {
     return (
       <div>
         <h1>Issue Tracker</h1>
-        <IssueFilter />
+        <IssueFilter setFilter={this.setFilter}/>
         <hr />
         <IssueTable issues={this.state.issues} />
         <hr />
@@ -131,7 +136,11 @@ export default class IssueList extends React.Component {
       </div>
     );
   }
+
+
 }
 
-// IssueList.propTypes = {
-// }
+IssueList.propTypes = {
+  router: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired
+}

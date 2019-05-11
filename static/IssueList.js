@@ -147,8 +147,7 @@ function IssueTable(props) {
 }
 
 IssueTable.propTypes = {
-  issues: _propTypes2.default.array.isRequired,
-  location: _propTypes2.default.object.isRequired
+  issues: _propTypes2.default.array.isRequired
 };
 
 var IssueList = function (_React$Component) {
@@ -162,6 +161,7 @@ var IssueList = function (_React$Component) {
     _this.state = { issues: [] };
 
     _this.createIssue = _this.createIssue.bind(_this);
+    _this.setFilter = _this.setFilter.bind(_this);
     return _this;
   }
 
@@ -175,7 +175,6 @@ var IssueList = function (_React$Component) {
     value: function componentDidUpdate(prevProps) {
       var oldQuery = prevProps.location.query;
       var newQuery = this.props.location.query;
-      console.log(oldQuery, newQuery);
       if (newQuery === oldQuery) return;
       this.loadData();
     }
@@ -234,6 +233,12 @@ var IssueList = function (_React$Component) {
       });
     }
   }, {
+    key: 'setFilter',
+    value: function setFilter(query) {
+      console.log(this.props);
+      this.props.router.push({ pathname: this.props.location.pathname, query: query });
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -244,7 +249,7 @@ var IssueList = function (_React$Component) {
           null,
           'Issue Tracker'
         ),
-        _react2.default.createElement(_IssueFilter2.default, null),
+        _react2.default.createElement(_IssueFilter2.default, { setFilter: this.setFilter }),
         _react2.default.createElement('hr', null),
         _react2.default.createElement(IssueTable, { issues: this.state.issues }),
         _react2.default.createElement('hr', null),
@@ -256,8 +261,10 @@ var IssueList = function (_React$Component) {
   return IssueList;
 }(_react2.default.Component);
 
-// IssueList.propTypes = {
-// }
-
-
 exports.default = IssueList;
+
+
+IssueList.propTypes = {
+  location: _propTypes2.default.object.isRequired,
+  router: _propTypes2.default.object.isRequired
+};

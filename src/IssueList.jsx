@@ -66,7 +66,6 @@ export default class IssueList extends React.Component {
   componentDidUpdate(prevProps) {
     const oldQuery = prevProps.location.search;
     const newQuery = this.props.location.search;
-    console.log(oldQuery, newQuery);
     if (newQuery === oldQuery) return;
     this.loadData();
   }
@@ -127,7 +126,6 @@ export default class IssueList extends React.Component {
   render() {
     return (
       <div>
-        <h1>Issue Tracker</h1>
         <IssueFilter setFilter={this.setFilter}/>
         <hr />
         <IssueTable issues={this.state.issues} />

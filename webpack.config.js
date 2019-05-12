@@ -48,6 +48,10 @@ module.exports = {
                 target: 'http://localhost:3000'
             }
         },
+        historyApiFallback: true,
+        contentBase: './',
+        hot: true
+
     },
 
     devtool: 'source-map'

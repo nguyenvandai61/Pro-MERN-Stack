@@ -30,6 +30,9 @@ app.get('/api/issues', (req, res) => {
   });
 });
 
+app.get('*', (req, res)=>{
+  res.sendFile(path.resolve('static/index.html'));
+})
 
 
 app.post('/api/issues', (req, res) => {

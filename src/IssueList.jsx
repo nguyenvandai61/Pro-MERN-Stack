@@ -139,6 +139,5 @@ export default class IssueList extends React.Component {
 }
 
 IssueList.propTypes = {
-  router: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired
 }

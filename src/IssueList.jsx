@@ -64,14 +64,15 @@ export default class IssueList extends React.Component {
     this.loadData();
   }
   componentDidUpdate(prevProps) {
-    const oldQuery = prevProps.location.search;
-    const newQuery = this.props.location.search;
+    const oldQuery = prevProps.location.query;
+    const newQuery = this.props.location.query;
     if (newQuery === oldQuery) return;
     this.loadData();
   }
 
   loadData() {
-    fetch(`/api/issues${this.props.location.search}`).then(response => {
+    let newqs = qs.stringify(this.props.location.query);
+    fetch(`/api/issues?${newqs}`).then(response => {
       if (response.ok) {
         response.json().then(data => {
           data.records.forEach(issue => {
@@ -93,6 +94,7 @@ export default class IssueList extends React.Component {
   }
 
   createIssue(newIssue) {
+    
     fetch('/api/issues', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -120,7 +122,7 @@ export default class IssueList extends React.Component {
   setFilter(query) {
     this.props.history.push({
       pathname: this.props.location.pathname, 
-      search: qs.stringify(query)
+      query: query
     })
   }
   render() {

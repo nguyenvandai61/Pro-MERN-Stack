@@ -88,5 +88,4 @@ export default class IssueFilter extends React.Component {
 
 IssueFilter.propTypes = {
   setFilter: PropTypes.func.isRequired,
-  
 }

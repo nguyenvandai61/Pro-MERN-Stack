@@ -48,7 +48,6 @@ const App = ({ match }) => {
 
 
 const RoutedApp = () =>{ 
-  console.log(this);
   return (
     <div>
       <Switch>

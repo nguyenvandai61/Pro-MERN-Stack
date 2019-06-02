@@ -4,9 +4,10 @@ import 'babel-polyfill';
 
 import express from 'express';
 import bodyParser from 'body-parser';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectID} from 'mongodb';
 import Issue from './issue.js';
 import path from 'path';
+import { objectTypeIndexer } from '@babel/types';
 const app = express();
 app.use(express.static('static'));
 app.use(bodyParser.json());
@@ -42,9 +43,30 @@ app.get('/api/issues', (req, res) => {
   });
 });
 
+app.get('/api/issues/:id', (req, res)=> {
+  let issueId;
+  try {
+    issueId = new ObjectID(req.params.id); 
+  } catch (error) {
+    res.status(422).json({message: `Invalid issue Id format ${req.params.id}`});
+    return;
+  }
+
+  // Tra ve an issue
+  db.collection('issues').find({_id: issueId}).limit(1)
+  .next().then( issue => {
+    if (!issue) res.status(404).json({message: `No such issue: ${issueId}`})
+      else res.json(issue);
+  }).catch(error => {
+    res.status(500).json({message: `Internal server Error: ${error}`})
+  })
+})
+
 app.get('*', (req, res)=>{
   res.sendFile(path.resolve('static/index.html'));
 })
+
+
 
 
 app.post('/api/issues', (req, res) => {

@@ -26,21 +26,29 @@ function cleanupIssue(issue) {
 
 function validateIssue(issue) {
   const errors = [];
-
   Object.keys(issueFieldType).forEach(field => {
     if (issueFieldType[field] === 'required' && !issue[field]) {
       errors.push(`Missing mandatory field: ${field}`);
     }
   });
 
+  
   if (!validIssueStatus[issue.status]) {
     errors.push(`${issue.status} is not a valid status.`);
   }
-
+  
   return (errors.length ? errors.join('; ') : null);
+}
+
+function convertIssue(issue) {
+  if (issue.created) issue.created = new Date(issue.created);
+  if (issue.completionDate) issue.completionDate = new Date(issue.completionDate);
+
+  return cleanupIssue(issue);
 }
 
 export default {
   validateIssue,
   cleanupIssue,
+  convertIssue,
 };

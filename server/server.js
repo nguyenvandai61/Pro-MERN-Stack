@@ -4,7 +4,7 @@ import 'babel-polyfill';
 
 import express from 'express';
 import bodyParser from 'body-parser';
-import { MongoClient, ObjectID} from 'mongodb';
+import { MongoClient, ObjectID } from 'mongodb';
 import Issue from './issue.js';
 import path from 'path';
 import { objectTypeIndexer } from '@babel/types';
@@ -30,39 +30,38 @@ app.get('/api/issues', (req, res) => {
   if (req.query.effort_lte) {
     filter.effort.$lte = parseInt(req.query.effort_lte, 10);
   }
-
-
+  
   db.collection('issues').find(filter).toArray()
-  .then(issues => {
-    const metadata = { total_count: issues.length };
-    res.json({ _metadata: metadata, records: issues });
-  })
-  .catch(error => {
-    console.log(error);
-    res.status(500).json({ message: `Internal Server Error: ${error}` });
-  });
+    .then(issues => {
+      const metadata = { total_count: issues.length };
+      res.json({ _metadata: metadata, records: issues });
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ message: `Internal Server Error: ${error}` });
+    });
 });
 
-app.get('/api/issues/:id', (req, res)=> {
+app.get('/api/issues/:id', (req, res) => {
   let issueId;
   try {
-    issueId = new ObjectID(req.params.id); 
+    issueId = new ObjectID(req.params.id);
   } catch (error) {
-    res.status(422).json({message: `Invalid issue Id format ${req.params.id}`});
+    res.status(422).json({ message: `Invalid issue Id format ${req.params.id}` });
     return;
   }
 
   // Tra ve an issue
-  db.collection('issues').find({_id: issueId}).limit(1)
-  .next().then( issue => {
-    if (!issue) res.status(404).json({message: `No such issue: ${issueId}`})
+  db.collection('issues').find({ _id: issueId }).limit(1)
+    .next().then(issue => {
+      if (!issue) res.status(404).json({ message: `No such issue: ${issueId}` })
       else res.json(issue);
-  }).catch(error => {
-    res.status(500).json({message: `Internal server Error: ${error}`})
-  })
+    }).catch(error => {
+      res.status(500).json({ message: `Internal server Error: ${error}` })
+    })
 })
 
-app.get('*', (req, res)=>{
+app.get('*', (req, res) => {
   res.sendFile(path.resolve('static/index.html'));
 })
 
@@ -75,7 +74,6 @@ app.post('/api/issues', (req, res) => {
   if (!newIssue.status) {
     newIssue.status = 'New';
   }
-  console.log(newIssue);
   const err = Issue.validateIssue(newIssue);
   if (err) {
     res.status(422).json({ message: `Invalid request: ${err}` });
@@ -84,16 +82,54 @@ app.post('/api/issues', (req, res) => {
 
   db.collection('issues').insertOne(Issue.cleanupIssue(newIssue)).then(result =>
     db.collection('issues').find({ _id: result.insertedId }).limit(1)
-    .next()
+      .next()
   )
-  .then(savedIssue => {
-    res.json(savedIssue);
-  })
-  .catch(error => {
-    console.log(error);
-    res.status(500).json({ message: `Internal Server Error: ${error}` });
-  });
+    .then(savedIssue => {
+      res.json(savedIssue);
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ message: `Internal Server Error: ${error}` });
+    });
 });
+
+
+app.put('/api/issues/:id', (req, res) => {
+  let issueId; // Doi tuong issue cu
+  try {
+    issueId = new ObjectID(req.params.id);
+  } catch (err) {
+    res.status(422).json({ message: `Invalid issue ID format: ${err}` });
+    return;
+  }
+
+  const issue = req.body;
+ // delete issue._id;
+  const err = Issue.validateIssue(issue);
+  if (err) {
+    res.status(422).json({ message: `Invalid request: ${err}` });
+    return;
+  }
+
+
+  db.collection('issues').updateOne(
+    { _id: issueId }, {
+      $set: Issue.convertIssue(issue)
+    })
+    .then(result =>
+      db.collection('issues').find({ _id: issueId}).limit(1)
+        .next()
+    )
+      .then(savedIssue => {
+        console.log(savedIssue);
+        res.json(savedIssue);
+      })
+      .catch(error => {
+        console.log(error);
+        res.status(500).json({ message: `Internal Server Error: ${error}` });
+      });
+  });
+
 
 MongoClient.connect('mongodb://localhost:27017/', { useNewUrlParser: true }).then((connection) => {
   db = connection.db('issuetracker');

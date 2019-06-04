@@ -72,6 +72,7 @@ export default class IssueList extends React.Component {
 
   loadData() {
     let newqs = qs.stringify(this.props.location.query);
+    
     fetch(`/api/issues?${newqs}`).then(response => {
       if (response.ok) {
         response.json().then(data => {
@@ -94,7 +95,6 @@ export default class IssueList extends React.Component {
   }
 
   createIssue(newIssue) {
-    
     fetch('/api/issues', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

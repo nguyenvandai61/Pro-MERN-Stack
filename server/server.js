@@ -121,7 +121,6 @@ app.put('/api/issues/:id', (req, res) => {
         .next()
     )
       .then(savedIssue => {
-        console.log(savedIssue);
         res.json(savedIssue);
       })
       .catch(error => {
@@ -130,6 +129,26 @@ app.put('/api/issues/:id', (req, res) => {
       });
   });
 
+app.delete('/api/issues/:id', (req, res) => {
+  let issueId;  
+  try {
+      issueId = new ObjectID(req.params.id);
+  } catch (err) {
+    res.json(422).json({message: `Invalid issue ID format: ${error}`})
+    return;
+  }
+
+  db.collection('issues').deleteOne({_id: issueId}).then((deleteRes)=>{
+    console.log(deleteRes);
+    if (deleteRes.deletedCount == 1) {
+      res.json({status: 'OK'});
+    } else {
+      res.json({status: 'Warning: object not found'});
+    }
+  }).catch(err => {
+    res.status(500).json({message: `Internal Server Error: ${err}`});
+  })
+})
 
 MongoClient.connect('mongodb://localhost:27017/', { useNewUrlParser: true }).then((connection) => {
   db = connection.db('issuetracker');

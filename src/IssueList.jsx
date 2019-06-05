@@ -8,27 +8,33 @@ import IssueAdd from './IssueAdd.jsx';
 import IssueFilter from './IssueFilter.jsx';
 
 
-const IssueRow = (props) => (
-  <tr>
-    <td><Link to={`/issues/${props.issue._id}`}>
-      {props.issue._id.substr(-4)}
-    </Link>
-    </td>
-    <td>{props.issue.status}</td>
-    <td>{props.issue.owner}</td>
-    <td>{props.issue.created.toDateString()}</td>
-    <td>{props.issue.effort}</td>
-    <td>{props.issue.completionDate ? props.issue.completionDate.toDateString() : ''}</td>
-    <td>{props.issue.title}</td>
-  </tr>
-);
+const IssueRow = (props) =>{
+  function onDeleteClick() {
+    props.deleteIssue(props.issue._id);
+  }
+  return (
+    <tr>
+      <td><Link to={`/issues/${props.issue._id}`}>
+        {props.issue._id.substr(-4)}
+      </Link>
+      </td>
+      <td>{props.issue.status}</td>
+      <td>{props.issue.owner}</td>
+      <td>{props.issue.created.toDateString()}</td>
+      <td>{props.issue.effort}</td>
+      <td>{props.issue.completionDate ? props.issue.completionDate.toDateString() : ''}</td>
+      <td>{props.issue.title}</td>
+      <td><button onClick={onDeleteClick}> DELETE </button></td>
+    </tr>
+  );
+} 
 
 IssueRow.propTypes = {
   issue: PropTypes.object.isRequired,
 };
 
 function IssueTable(props) {
-  const issueRows = props.issues.map(issue => <IssueRow key={issue._id} issue={issue} />);
+  const issueRows = props.issues.map(issue => <IssueRow key={issue._id} issue={issue} deleteIssue={props.deleteIssue}/>);
   return (
     <table className="bordered-table">
       <thead>
@@ -49,6 +55,7 @@ function IssueTable(props) {
 
 IssueTable.propTypes = {
   issues: PropTypes.array.isRequired,
+  deleteIssue: PropTypes.func.isRequired
 };
 
 
@@ -58,7 +65,9 @@ export default class IssueList extends React.Component {
     this.state = { issues: [] };
     this.createIssue = this.createIssue.bind(this);
     this.setFilter = this.setFilter.bind(this);
-  }
+    this.deleteIssue = this.deleteIssue.bind(this);
+    
+   }
 
   componentDidMount() {
     this.loadData();
@@ -125,12 +134,23 @@ export default class IssueList extends React.Component {
       query: query
     })
   }
+
+  deleteIssue(id) {
+    fetch(`/api/issues/${id}`, {method: 'DELETE'}).then(response => {
+      if (!response.ok) {
+        alert('Failed to delete issues');
+      } else {this.loadData()}
+    }).catch((err)=> {
+      err.json(err.message);
+    })
+  }
+
   render() {
     return (
       <div>
         <IssueFilter setFilter={this.setFilter}/>
         <hr />
-        <IssueTable issues={this.state.issues} />
+        <IssueTable issues={this.state.issues} deleteIssue={this.deleteIssue}/>
         <hr />
         <IssueAdd createIssue={this.createIssue} />
       </div>

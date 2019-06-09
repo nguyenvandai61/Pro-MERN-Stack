@@ -1,26 +1,43 @@
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import NumInput from './NumInput.jsx';
-import DateInput from './DateInput.jsx';
-import { Card, Form, FormGroup, FormControl, ButtonToolbar, Button } from 'react-bootstrap';
+import {
+  Card, Form, FormGroup, FormControl, ButtonToolbar, Button,
+} from 'react-bootstrap';
 import { Col, Row, Alert } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap';
+import DateInput from './DateInput.jsx';
+import NumInput from './NumInput.jsx';
+import Toast from './Toast.jsx';
+
 export default class IssueEdit extends React.Component { // eslint-disable-line
   constructor(props) {
     super(props);
     this.state = {
       issue: {
-        _id: '', title: '', status: '', owner: '', effort: null,
-        completionDate: null, created: null,
+        _id: '',
+        title: '',
+        status: '',
+        owner: '',
+        effort: null,
+        completionDate: null,
+        created: null,
       },
-      invalidFields: {}, showingValidation: false
-    }
+      invalidFields: {},
+      showingValidation: false,
+      toastVisible: false,
+      toastMessage: '',
+      toastType: 'success',
+    };
+    this.dismissValidation = this.dismissValidation.bind(this);
+    this.showValidation = this.showValidation.bind(this);
+
+    this.showSuccess = this.showSuccess.bind(this);
+    this.showError = this.showError.bind(this);
+    this.dismissToast = this.dismissToast.bind(this);
+
     this.onChange = this.onChange.bind(this);
     this.onValidityChange = this.onValidityChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    this.dismissValidation = this.dismissValidation.bind(this);
-    this.showValidation = this.showValidation.bind(this);
   }
 
   componentDidMount() {
@@ -28,8 +45,7 @@ export default class IssueEdit extends React.Component { // eslint-disable-line
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.issue !== this.props.issue)
-      this.loadData();
+    if (prevProps.issue !== this.props.issue) { this.loadData(); }
   }
 
   onChange(e, convertedValue) {
@@ -57,6 +73,18 @@ export default class IssueEdit extends React.Component { // eslint-disable-line
     this.setState({ showValidation: false });
   }
 
+  showSuccess(message) {
+    this.setState({ toastVisible: true, toastMessage: message, toastType: 'success' });
+  }
+
+  showError(message) {
+    this.setState({ toastVisible: true, toastMessage: message, toastType: 'danger' });
+  }
+
+  dismissToast() {
+    this.setState({ toastVisible: false });
+  }
+
   onSubmit(e) {
     e.preventDefault();
     this.showValidation();
@@ -67,59 +95,58 @@ export default class IssueEdit extends React.Component { // eslint-disable-line
       {
         method: 'PUT',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(this.state.issue)
-      }
-    ).then(response => {
+        body: JSON.stringify(this.state.issue),
+      }).then((response) => {
       if (response.ok) {
-        response.json().then(updatedIssue => {
-          console.log(updatedIssue);
+        response.json().then((updatedIssue) => {
           updatedIssue.created = new Date(updatedIssue.created);
-          if (updatedIssue.completionDate)
+          if (updatedIssue.completionDate) {
             updatedIssue.completionDate = new Date(updatedIssue.completionDate);
+          }
           this.setState({ issue: updatedIssue });
-          alert("Updated issue successfully!!")
-        })
+          this.showSuccess('Updated issue successfully!!');
+        });
       } else {
-        response.json().then(err => {
-          alert(`Failed to update issue: ${err.message}`);
-        })
+        response.json().then((err) => {
+          this.showError(`Failed to update issue: ${err.message}`);
+        });
       }
-    }).catch(err => {
-      alert(`Error in sending data to server: ${err.message}`);
-    })
+    }).catch((err) => {
+      this.showError(`Error in sending data to server: ${err.message}`);
+    });
   }
+
   loadData() {
-    fetch(`/api/issues/${this.props.match.params.id}`).then(res => {
+    fetch(`/api/issues/${this.props.match.params.id}`).then((res) => {
       if (res.ok) {
-        res.json().then(issue => {
+        res.json().then((issue) => {
           issue.created = new Date(issue.created);
-          issue.completionDate = issue.completionDate != null ?
-            new Date(issue.completionDate) : '';
+          issue.completionDate = issue.completionDate != null
+            ? new Date(issue.completionDate) : '';
           issue.effort = (issue.effort) ? issue.effort.toString() : '';
-          this.setState({ issue: issue });
-        })
-      }
-      else {
-        res.json().then(err => {
+          this.setState({ issue });
+        });
+      } else {
+        res.json().then((err) => {
           alert(`Failed to fetch issue: ${err}`);
-        })
+        });
       }
-    }).catch(err => {
+    }).catch((err) => {
       alert(`Error in Fetching data from server: ${err}`);
-    })
+    });
   }
 
 
   render() {
-    const issue = this.state.issue;
+    const { issue } = this.state;
     let validationMessage = null;
-    if (Object.keys(this.state.invalidFields).
-      length !== 0 && this.state.showingValidation) {
+    if (Object.keys(this.state.invalidFields)
+      .length !== 0 && this.state.showingValidation) {
       validationMessage = (
         <Alert variant="danger" onDismiss={this.dismissValidation}>
           Please correct invalid fields before submitting.
         </Alert>
-      )
+      );
     }
 
     return (
@@ -128,7 +155,9 @@ export default class IssueEdit extends React.Component { // eslint-disable-line
         <Form onSubmit={this.onSubmit}>
           <FormGroup as={Row}>
             <Col sm={3}>ID</Col>
-            <Col sm={9}> {issue._id}</Col>
+            <Col sm={9}>
+              {issue._id}
+            </Col>
           </FormGroup>
           <FormGroup as={Row}>
             <Col sm={3}>Created</Col>
@@ -164,8 +193,12 @@ export default class IssueEdit extends React.Component { // eslint-disable-line
           <FormGroup as={Row}>
             <Col sm={3}>Completion Date</Col>
             <Col sm={9}>
-              <FormControl as={DateInput} value={issue.completionDate} onChange={this.onChange}
-                onValidityChange={this.onValidityChange} />
+              <FormControl
+                as={DateInput}
+                value={issue.completionDate}
+                onChange={this.onChange}
+                onValidityChange={this.onValidityChange}
+              />
 
             </Col>
           </FormGroup>
@@ -177,20 +210,28 @@ export default class IssueEdit extends React.Component { // eslint-disable-line
             </Col>
           </FormGroup>
           <FormGroup as={Row}>
-            <Col sm={{size: 6, offset: 3}}>
+            <Col sm={{ size: 6, offset: 3 }}>
               <ButtonToolbar>
                 <Button type="submit">Submit</Button>
-                <LinkContainer to="/issues"><Button>
-                  Back
-                  </Button></LinkContainer>
+                <LinkContainer to="/issues">
+                  <Button>
+                    Back
+                  </Button>
+                </LinkContainer>
 
               </ButtonToolbar>
             </Col>
           </FormGroup>
           <FormGroup as={Row}>
-            <Col sm={{size: 9, offset: 3}}>{validationMessage}</Col>
+            <Col sm={{ size: 9, offset: 3 }}>{validationMessage}</Col>
           </FormGroup>
         </Form>
+        <Toast
+          showing={this.state.toastVisible}
+          message={this.state.toastMessage}
+          onDismiss={this.state.dismissToast}
+          variant={this.state.toastType}
+        />
       </Card>
     );
   }

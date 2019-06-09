@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Form, Button, FormControl} from 'react-bootstrap';
+import { Form, Button, FormControl } from 'react-bootstrap';
+
 export default class IssueAdd extends React.Component {
   constructor() {
     super();
@@ -25,10 +26,8 @@ export default class IssueAdd extends React.Component {
       <div>
         <Form inline name="issueAdd" onSubmit={this.handleSubmit}>
           <FormControl type="text" name="owner" placeholder="Owner" />
-        
           <FormControl type="text" name="title" placeholder="Title" />
-      
-          <Button>Add</Button>
+          <Button onClick={this.handleSubmit}>Add</Button>
         </Form>
       </div>
     );

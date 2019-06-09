@@ -1,11 +1,13 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
-import history from 'history';
-import { BrowserRouter as Router, Switch, Link, Route, HashRouter } from 'react-router-dom';
-import { Redirect, withRouter } from "react-router";
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import {
+ BrowserRouter as Router, Switch, Link, Route,
+} from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router';
+import {
+ Navbar, Nav, NavItem, NavDropdown,
+} from 'react-bootstrap';
 
 import IssueList from './IssueList.jsx';
 import IssueEdit from './IssueEdit.jsx';
@@ -24,11 +26,17 @@ const Header = () => (
         <Nav.Link href="/reports">Reports</Nav.Link>
       </Nav>
       <Nav inline="true">
-        <NavItem style={{color: "white", alignSelf:"center" }} > 
-          <i className="fa fa-plus-square"  aria-hidden="true"></i> Create Issue
+        <NavItem
+          style={{ color: 'white', alignSelf: 'center' }}
+        >
+          <i className="fa fa-plus-square" aria-hidden="true" />
+          Create Issue
         </NavItem>
-        <NavDropdown id="collasible-nav-dropdown" title={<i className="fa fa-align-justify" aria-hidden="true" ></i>
-        }>
+        <NavDropdown
+          id="collasible-nav-dropdown"
+          title={<i className="fa fa-align-justify" aria-hidden="true" />
+          }
+        >
           <NavDropdown.Item>
             Logout
           </NavDropdown.Item>
@@ -36,50 +44,41 @@ const Header = () => (
       </Nav>
     </Navbar.Collapse>
   </Navbar>
-)
+);
 
-const App = ({ match }) => {
-  return (
-    <Router history={Router}>
-      <div>
-        <Header />
-
-        <div className="content">
-          <div className="container-fluid">
-            <RoutedApp />
-            <hr />
-            <h5><small>
-              Full source code available at this &nbsp;
-          <a href="https://github.com/vasansr/pro-mearn-stack">Github Link</a> <br />
-              And Update 2019 at this &nbsp;
-          <a href="https://github.com/nguyenvandai61/Pro-MERN-Stack">Github Link</a>
-            </small>
-            </h5>
-          </div>
-        </div>
-
-      </div>
-    </Router>
-  )
-}
-
-
-
-const RoutedApp = () => {
-  return (
+const App = ({ match }) => (
+  <Router history={Router}>
     <div>
-      <Switch>
-        <Route path="/issues" exact component={withRouter(IssueList)} />
-        <Route path="/issues/:id" component={IssueEdit} />
-        <Route path="*" component={NoMatch} />
-      </Switch>
+      <Header />
+
+      <div className="content">
+        <div className="container-fluid">
+          <RoutedApp />
+          <hr />
+          <h5>
+            <small>
+              Full source code available at this &nbsp;
+              <a href="https://github.com/vasansr/pro-mearn-stack">Github Link</a>
+              <br />
+              And Update 2019 at this &nbsp;
+              <a href="https://github.com/nguyenvandai61/Pro-MERN-Stack">Github Link</a>
+            </small>
+          </h5>
+        </div>
+      </div>
+
     </div>
-  );
-}
-
-
-
-
+  </Router>
+);
+const RoutedApp = () => (
+  <div>
+    <Switch>
+      <Route path="/issues" exact component={withRouter(IssueList)} />
+      <Route path="/issues/:id" component={IssueEdit} />
+      <Route path="*" component={NoMatch} />
+    </Switch>
+  </div>
+);
 ReactDOM.render(<App />, contentNode);
 
 if (module.hot) {

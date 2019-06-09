@@ -1,6 +1,9 @@
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Row, Col, Form, FormGroup, ButtonGroup } from 'react-bootstrap'
+import {
+  Button, Row, Col, Form, FormGroup, ButtonGroup,
+} from 'react-bootstrap';
 export default class IssueFilter extends React.Component {
   constructor(props) {
     super(props);
@@ -9,7 +12,7 @@ export default class IssueFilter extends React.Component {
       effort_gte: props.effort_gte || '',
       effort_lte: props.effort_lte || '',
       changed: false,
-    }
+    };
 
     this.onChangeStatus = this.onChangeStatus.bind(this);
     this.onChangeEffort_gte = this.onChangeEffort_gte.bind(this);
@@ -25,22 +28,22 @@ export default class IssueFilter extends React.Component {
       status: newProps.status || '',
       effort_gte: newProps.effort_gte || '',
       effort_lte: newProps.effort_lte || '',
-      changed: false
+      changed: false,
     });
   }
 
   onChangeStatus(e) {
     this.setState({ status: e.target.value, changed: true });
   }
+
   onChangeEffort_gte(e) {
     const effortString = e.target.value;
-    if (effortString.match(/^\d*$/))
-      this.setState({ effort_gte: effortString, changed: true });
+    if (effortString.match(/^\d*$/)) { this.setState({ effort_gte: effortString, changed: true }); }
   }
+
   onChangeEffort_lte(e) {
     const effortString = e.target.value;
-    if (effortString.match(/^\d*$/))
-      this.setState({ effort_lte: effortString, changed: true });
+    if (effortString.match(/^\d*$/)) { this.setState({ effort_lte: effortString, changed: true }); }
   }
 
   applyFilter() {
@@ -65,7 +68,6 @@ export default class IssueFilter extends React.Component {
   }
 
   render() {
-    const Separator = () => <span> | </span>;
     return (
       <Row>
         <Col xs={6} sm={4} md={3} lg={2}>
@@ -115,4 +117,4 @@ export default class IssueFilter extends React.Component {
 
 IssueFilter.propTypes = {
   setFilter: PropTypes.func.isRequired,
-}
+};

@@ -3,7 +3,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable linebreak-style */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Alert, Collapse } from 'react-bootstrap';
 
 export default class Toast extends React.Component {

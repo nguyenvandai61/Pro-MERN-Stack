@@ -195,6 +195,7 @@ export default class IssueEdit extends React.Component { // eslint-disable-line
             <Col sm={9}>
               <FormControl
                 as={DateInput}
+                name="completionDate"
                 value={issue.completionDate}
                 onChange={this.onChange}
                 onValidityChange={this.onValidityChange}

@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import qs from 'query-string';
 import { Button, Table, Card, Collapse } from 'react-bootstrap';
 
-import IssueAdd from './IssueAdd.jsx';
 import IssueFilter from './IssueFilter.jsx';
 
 
@@ -66,7 +65,7 @@ export default class IssueList extends React.Component {
   constructor() {
     super();
     this.state = { issues: [] };
-    this.createIssue = this.createIssue.bind(this);
+    // this.createIssue = this.createIssue.bind(this);
     this.setFilter = this.setFilter.bind(this);
     this.deleteIssue = this.deleteIssue.bind(this);
 
@@ -106,30 +105,6 @@ export default class IssueList extends React.Component {
     });
   }
 
-  createIssue(newIssue) {
-    fetch('/api/issues', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newIssue),
-    }).then(response => {
-      if (response.ok) {
-        response.json().then(updatedIssue => {
-          updatedIssue.created = new Date(updatedIssue.created);
-          if (updatedIssue.completionDate) {
-            updatedIssue.completionDate = new Date(updatedIssue.completionDate);
-          }
-          const newIssues = this.state.issues.concat(updatedIssue);
-          this.setState({ issues: newIssues });
-        });
-      } else {
-        response.json().then(error => {
-          alert(`Failed to add issue: ${error.message}`);
-        });
-      }
-    }).catch(err => {
-      alert(`Error in sending data to server: ${err.message}`);
-    });
-  }
 
   setFilter(query) {
     this.props.history.push({
@@ -162,7 +137,6 @@ export default class IssueList extends React.Component {
         <hr />
         <IssueTable issues={this.state.issues} deleteIssue={this.deleteIssue} />
         <hr />
-        <IssueAdd createIssue={this.createIssue} />
       </div>
     );
   }

@@ -11,6 +11,7 @@ import {
 
 import IssueList from './IssueList.jsx';
 import IssueEdit from './IssueEdit.jsx';
+import IssueAddNavItem from './IssueAddNavItem.jsx';
 
 const contentNode = document.getElementById('contents');
 const NoMatch = () => <p>Page Not Found</p>;
@@ -26,12 +27,7 @@ const Header = () => (
         <Nav.Link href="/reports">Reports</Nav.Link>
       </Nav>
       <Nav inline="true">
-        <NavItem
-          style={{ color: 'white', alignSelf: 'center' }}
-        >
-          <i className="fa fa-plus-square" aria-hidden="true" />
-          Create Issue
-        </NavItem>
+        <IssueAddNavItem/>
         <NavDropdown
           id="collasible-nav-dropdown"
           title={<i className="fa fa-align-justify" aria-hidden="true" />

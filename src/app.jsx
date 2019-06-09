@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import history from 'history';
 import { BrowserRouter as Router, Switch, Link, Route, HashRouter } from 'react-router-dom';
 import { Redirect, withRouter } from "react-router";
+import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
 import IssueList from './IssueList.jsx';
 import IssueEdit from './IssueEdit.jsx';
@@ -13,41 +14,58 @@ const contentNode = document.getElementById('contents');
 const NoMatch = () => <p>Page Not Found</p>;
 
 
+const Header = () => (
+  <Navbar bg="primary" variant="dark">
+    <Navbar.Brand href="#home">Issue Tracker</Navbar.Brand>
+    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+    <Navbar.Collapse id="responsive-navbar-nav">
+      <Nav className="mr-auto">
+        <Nav.Link href="/issues">Issues</Nav.Link>
+        <Nav.Link href="/reports">Reports</Nav.Link>
+      </Nav>
+      <Nav inline="true">
+        <NavItem style={{color: "white", alignSelf:"center" }} > 
+          <i className="fa fa-plus-square"  aria-hidden="true"></i> Create Issue
+        </NavItem>
+        <NavDropdown id="collasible-nav-dropdown" title={<i className="fa fa-align-justify" aria-hidden="true" ></i>
+        }>
+          <NavDropdown.Item>
+            Logout
+          </NavDropdown.Item>
+        </NavDropdown>
+      </Nav>
+    </Navbar.Collapse>
+  </Navbar>
+)
+
 const App = ({ match }) => {
   return (
     <Router history={Router}>
-    <div>
-        <div className="header">
-          <h1>Issue Tracker</h1>
-        </div>
+      <div>
+        <Header />
+
         <div className="content">
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/issues">Issues</Link>
-            </li>
-            <li>
-              <Link to="*">No Match</Link>
-            </li>
-          </ul>
-          <RoutedApp />
-        </div>
-        <div className="footer">
-          Full source code available at this &nbsp;
+          <div className="container-fluid">
+            <RoutedApp />
+            <hr />
+            <h5><small>
+              Full source code available at this &nbsp;
           <a href="https://github.com/vasansr/pro-mearn-stack">Github Link</a> <br />
-          And Update 2019 at this &nbsp;
+              And Update 2019 at this &nbsp;
           <a href="https://github.com/nguyenvandai61/Pro-MERN-Stack">Github Link</a>
+            </small>
+            </h5>
+          </div>
         </div>
-    </div>
+
+      </div>
     </Router>
   )
 }
 
 
 
-const RoutedApp = () =>{ 
+const RoutedApp = () => {
   return (
     <div>
       <Switch>
@@ -56,7 +74,8 @@ const RoutedApp = () =>{
         <Route path="*" component={NoMatch} />
       </Switch>
     </div>
-);}
+  );
+}
 
 
 

@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import NumInput from './NumInput.jsx';
 import DateInput from './DateInput.jsx';
 import { Card, Form, FormGroup, FormControl, ButtonToolbar, Button } from 'react-bootstrap';
-import { Col, Row } from 'react-bootstrap';
-import {LinkContainer} from 'react-router-bootstrap'
+import { Col, Row, Alert } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap'
 export default class IssueEdit extends React.Component { // eslint-disable-line
   constructor(props) {
     super(props);
@@ -14,11 +14,13 @@ export default class IssueEdit extends React.Component { // eslint-disable-line
         _id: '', title: '', status: '', owner: '', effort: null,
         completionDate: null, created: null,
       },
-      invalidFields: {}
+      invalidFields: {}, showingValidation: false
     }
     this.onChange = this.onChange.bind(this);
     this.onValidityChange = this.onValidityChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.dismissValidation = this.dismissValidation.bind(this);
+    this.showValidation = this.showValidation.bind(this);
   }
 
   componentDidMount() {
@@ -46,8 +48,18 @@ export default class IssueEdit extends React.Component { // eslint-disable-line
     }
     this.setState({ invalidFields });
   }
+
+  showValidation() {
+    this.setState({ showingValidation: true });
+  }
+
+  dismissValidation() {
+    this.setState({ showValidation: false });
+  }
+
   onSubmit(e) {
     e.preventDefault();
+    this.showValidation();
     if (Object.keys(this.state.invalidFields).length !== 0) {
       return;
     }
@@ -100,12 +112,16 @@ export default class IssueEdit extends React.Component { // eslint-disable-line
 
   render() {
     const issue = this.state.issue;
-    const validationMessage = Object.keys(this.state.invalidFields).
-      length === 0 ? null : (
-        <div className="error">
+    let validationMessage = null;
+    if (Object.keys(this.state.invalidFields).
+      length !== 0 && this.state.showingValidation) {
+      validationMessage = (
+        <Alert variant="danger" onDismiss={this.dismissValidation}>
           Please correct invalid fields before submitting.
-      </div>
-      );
+        </Alert>
+      )
+    }
+
     return (
       <Card>
         <Card.Header>Edit Issue</Card.Header>
@@ -134,44 +150,46 @@ export default class IssueEdit extends React.Component { // eslint-disable-line
           <FormGroup as={Row}>
             <Col sm={3}>Owner</Col>
             <Col sm={9}>
-            <FormControl name="Owner" value={issue.owner} onChange={this.onChange}/> 
+              <FormControl name="Owner" value={issue.owner} onChange={this.onChange} />
             </Col>
           </FormGroup>
-          
-          
+
+
           <FormGroup as={Row}>
             <Col sm={3}>Effort</Col>
             <Col sm={9}>
-            <FormControl as={NumInput} name="effort" value={issue.effort} onChange={this.onChange}/>
+              <FormControl as={NumInput} name="effort" value={issue.effort} onChange={this.onChange} />
             </Col>
           </FormGroup>
           <FormGroup as={Row}>
-           <Col sm={3}>Completion Date</Col>
-           <Col sm={9}>
-           <FormControl as={DateInput} value={issue.completionDate} onChange={this.onChange}
-            onValidityChange={this.onValidityChange}/>
-           
-           </Col>
+            <Col sm={3}>Completion Date</Col>
+            <Col sm={9}>
+              <FormControl as={DateInput} value={issue.completionDate} onChange={this.onChange}
+                onValidityChange={this.onValidityChange} />
+
+            </Col>
           </FormGroup>
-          
+
           <FormGroup as={Row}>
             <Col sm={3}>Title</Col>
             <Col sm={9}>
-            <FormControl name="Title" value={issue.title} onChange={this.onChange}/>
+              <FormControl name="Title" value={issue.title} onChange={this.onChange} />
             </Col>
           </FormGroup>
           <FormGroup as={Row}>
-            <Col smOffset={3} sm={6}>
+            <Col sm={{size: 6, offset: 3}}>
               <ButtonToolbar>
                 <Button type="submit">Submit</Button>
                 <LinkContainer to="/issues"><Button>
-                    Back
+                  Back
                   </Button></LinkContainer>
 
               </ButtonToolbar>
             </Col>
           </FormGroup>
-          {validationMessage}
+          <FormGroup as={Row}>
+            <Col sm={{size: 9, offset: 3}}>{validationMessage}</Col>
+          </FormGroup>
         </Form>
       </Card>
     );

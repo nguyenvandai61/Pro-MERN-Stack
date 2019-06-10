@@ -1,3 +1,4 @@
+const PORT = process.env.PORT || 3000;
 import SourceMapSupport from 'source-map-support';
 SourceMapSupport.install();
 import 'babel-polyfill';
@@ -133,7 +134,7 @@ app.put('/api/issues/:id', (req, res) => {
 
 MongoClient.connect('mongodb://localhost:27017/', { useNewUrlParser: true }).then((connection) => {
   db = connection.db('issuetracker');
-  app.listen(3000, () => {
+  app.listen(PORT, () => {
     console.log('App started on port 3000');
   });
 }).catch((error) => {

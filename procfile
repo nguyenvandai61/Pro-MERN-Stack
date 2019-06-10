@@ -1,0 +1,1 @@
+web node -w dist dist/server.js

@@ -1,6 +1,7 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
+console.log(11);
 
  import HelloWorld from '../src/HelloWorld.jsx';
 
